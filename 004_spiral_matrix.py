@@ -2,21 +2,23 @@ class Solution(object):
     def spiralOrder(self, matrix):
         if not matrix:
             return []
-        R, C = len(matrix), len(matrix[0])
-        seen = [[False] * C for _ in matrix]
-        ans = []
-        directions = [[0, 1], [1, 0], [0, -1], [-1, 0]] # 右下左上
-        currentR = currentC = di = 0
-        for _ in range(R * C):
-            ans.append(matrix[currentR][currentC])
-            seen[currentR][currentC] = True
-            nextR, nextC = currentR + directions[di][0], currentC + directions[di][1]
-            if 0 <= nextR < R and 0 <= nextC < C and not seen[nextR][nextC]:
-                currentR, currentC = nextR, nextC
+        rows, cols = len(matrix), len(matrix[0])
+        seen = [[False]*cols for _ in matrix]
+        arr = []
+        curRow = curCol = dirIndex = 0
+        dirList = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        for _ in range(rows*cols):
+            arr.append(matrix[curRow][curCol])
+            seen[curRow][curCol] = True
+            nextRow, nextCol = curRow + \
+                dirList[dirIndex][0], curCol + dirList[dirIndex][1]
+            if 0 <= nextRow < rows and 0 <= nextCol < cols and not seen[nextRow][nextCol]:
+                curRow, curCol = nextRow, nextCol
             else:
-                di = (di + 1) % 4
-                currentR, currentC = currentR + directions[di][0], currentC + directions[di][1]
-        return ans
+                dirIndex = (dirIndex + 1) % 4
+                curRow, curCol = curRow + \
+                    dirList[dirIndex][0], curCol + dirList[dirIndex][1]
+        return arr
 
 
 s = Solution()
