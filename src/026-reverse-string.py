@@ -1,8 +1,8 @@
 class Solution:
     # @param A : string
     # @return string
-    def reverseWords(self, A):
-        l = filter(lambda x: x, [i.strip() for i in A.split(' ')])
+    def reverseWords(self, s):
+        l = s.strip().split()
         l.reverse()
         return ' '.join(l)
 
