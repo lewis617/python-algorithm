@@ -8,23 +8,41 @@ class Solution:
     # @param wordList, a set of string
     # @return a list of lists of string
     def findLadders(self, beginWord, endWord, wordList):
-        level = {beginWord}
-        parents = defaultdict(set)
-        while level and endWord not in parents:
-            next_level = defaultdict(set)
-            for node in level:
-                for char in string.ascii_lowercase:
-                    for i in range(len(beginWord)):
-                        n = node[:i]+char+node[i+1:]
-                        if n in wordList and n not in parents:
-                            next_level[n].add(node)
-            level = next_level
-            parents.update(next_level)
-        res = [[endWord]]
-        while res and res[0][0] != beginWord:
-            res = [[p]+r for r in res for p in parents[r[0]]]
-        return res
+        wordList = set(wordList)
+        if endWord not in wordList:
+            return []
+        graph = defaultdict(set)
+        # value in seen represent depth
+        seen = defaultdict(int)
+        seen[beginWord] = 0
+        endDepth = float('inf')
+        queue = [beginWord]
+        while queue:
+            word = queue.pop(0)
+            if seen[word] >= endDepth:
+                break
+            for c in string.ascii_lowercase:
+                for i in range(len(word)):
+                    if i != c:
+                        newWord = word[:i] + c + word[i+1:]
+                        # bfs maybe have seen its nephew, so if depth of newWord is 1 less than word, then it's nephew
+                        if newWord in wordList and (newWord not in seen or seen[newWord] -1 == seen[word]):  
+                            graph[word].add(newWord)
+                            if newWord == endWord:
+                                endDepth = seen[word] + 1
+                            if newWord not in seen:
+                                seen[newWord] = seen[word] + 1
+                                queue.append(newWord)
+        ans = []
+        def dfs(word, path):
+            if word == endWord:
+                ans.append(path)
+            for newWord in graph[word]:
+                dfs(newWord, path + [newWord])
+        dfs(beginWord, [beginWord])
+        return ans
+        
 
 
 s = Solution()
-print(s.findLadders('hit', 'cog', {"hot", "dot", "dog", "lot"}))
+print(s.findLadders('hit', 'cog', ["hot","dot","dog","lot","log","cog"]))
