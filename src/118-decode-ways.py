@@ -6,16 +6,16 @@ class Solution(object):
         """
         if s[0] == '0':
             return 0
-        l = len(s)
-        dp = [0] * l
-        dp[0] = 1
-        for i in range(1, l):
+        dp1 = dp2 = 1
+        for i in range(1, len(s)):
+            dp3 = 0
             if s[i] != '0':
-                dp[i] += dp[i-1]
+                dp3 += dp2
             if '09' < s[i-1:i+1] < '27':
-                dp[i] += (dp[i-2] if i > 1 else 1)
-        return dp[l-1]
+                dp3 += dp1
+            dp1, dp2 = dp2, dp3
+        return dp2
 
 
 s = Solution()
-print(s.numDecodings('1204'))
+print(s.numDecodings('301'))
